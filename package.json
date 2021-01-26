@@ -1,0 +1,14 @@
+{
+  "name": "sansmots",
+  "version": "1.0.0",
+  "description": "Authenticator without words(sansmots)",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Theodor Urban",
+  "license": "ISC",
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
+  }
+}
