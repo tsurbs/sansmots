@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body >
+	<div id="left"></div>
+	<canvas id= "sandbox" ></canvas>
+	<div id="right"></div>
+	<style type="text/css">
+		body{
+			display:flex;
+		}#sandbox{
+			background: red;
+			order:1;
+			flex-grow:1;
+		}#left{
+			order:1;
+			flex-grow:1;
+		}#right{
+			order:1;
+			flex-grow:1;
+		}
+	</style>
+	<script type="text/javascript">
+		onedone = false
+
+		times = []
+
+		document.oncontextmenu = e => {if(onedone){times.push(time -= new Date().getTime()); onedone = false}else{onedone = true; time = new Date().getTime(); }; return false;}
+		document.addEventListener("mousedown", e => {if(onedone){times.push(time -= new Date().getTime()); onedone = false}else{onedone = true; time = new Date().getTime();}})
+
+		canvas = document.getElementById('sandbox');
+		ctx = canvas.getContext('2d');
+
+		canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
+
+		//document.exitPointerLock = document.exitPointerLock ||document.mozExitPointerLock;
+
+		canvas.height = canvas.height*4
+		canvas.width = canvas.width*4
+
+		canvas.onclick = function() {
+  			canvas.requestPointerLock();
+  			document.addEventListener("mousemove", drawPtrLck, false);
+  			
+		}
+		;
+
+		fst = true
+
+		function drawPtrLck(e){
+
+			
+			if(fst){
+				x = e.offsetX
+				y = e.offsetY
+				fst = false
+			}
+
+			x += e.movementX
+			y += e.movementY
+
+			
+			ctx.strokeStyle = "blue";
+			ctx.beginPath();
+			ctx.rect(e.movementX, e.movementY, 1, 1);
+			ctx.stroke();
+
+			ctx.strokeStyle = "green";
+			ctx.beginPath();
+			ctx.rect(x, y, 1, 1);
+			ctx.stroke();
+		}
+
+		//setInterval(prompt("exit"), 5000)
+	</script>
+</body>
+</html>
