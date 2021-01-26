@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 	<meta name="viewport" content="user-scalable=no">
 	<title></title>
 </head>
@@ -33,7 +33,16 @@
 		canvas = document.getElementById('sandbox');
 		ctx = canvas.getContext('2d');
 
-		userID = 4;
+		socket = io();
+		var userID = 0;
+		socket.on("newUser", id => {
+			for(i = 0; i < id.length; i++){
+				userID += id.substring(i, i+1).charCodeAt(0)
+			}
+		});
+
+
+
 		i = 0
 		fingerVals = []
 		touching = false;

@@ -28,27 +28,21 @@ xmlhttp.onreadystatechange = function() {
 function newuser(id){
 	var self = {
 		id:id,
-		name:"empty",
-		answer:"empty",
-		number:String(Math.floor(Math.random()*10))
 	}
 	return self;
 }
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket){
-	var user = newuser(socket.id);
-	socket.emit("newUser", user.number)
-	socket.id = Math.random();
+	var user = newuser(socket.client.conn.remoteAddress);
+	socket.emit("newUser", user.id)
 	SOCKET_LIST[socket.id] = socket;
 
-	console.log(user)
+	console.log(socket.client.conn.remoteAddress , socket.id)
 	USER_LIST[socket.id] = user;
 
 	socket.on("submit", function(answer){
 		console.log(answer)
-		user.name=answer[0]
-		user.answer=answer[1]
 	})
 
 	socket.on('disconnect', function(){
@@ -61,20 +55,3 @@ io.sockets.on('connection', function(socket){
 		delete SOCKET_LIST[socket.id];
 	})
 });
-
-setInterval(function(){
-	var pack = [];
-	for(var i in USER_LIST){
-		var user = USER_LIST[i];
-		//console.log(String(user.y))
-		pack.push({
-			x:user.x,
-			y:user.y,
-			theta:user.theta,
-			number:user.number
-		})
-	}for(var i in SOCKET_LIST){
-		var socket = SOCKET_LIST[i];
-		socket.emit('newPoss',pack);
-	}
-},1000/25);
