@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var serv = require('http').Server(app);
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const fs = require('fs');
 
 app.get('/',function(req,res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -13,6 +14,8 @@ app.set('host', process.env.HOST || '0.0.0.0')
 serv.listen(app.get('port'), app.get('host'), function(){
   console.log("Express server listening on port " + app.get('port')+"and host"+app.get('host'));
 });
+
+var userdb = fs.readFileSync( "jsdb.txt", 'utf8' ).split("\n");
 
 var USER_LIST = [];
 var SOCKET_LIST = [];
@@ -28,6 +31,7 @@ xmlhttp.onreadystatechange = function() {
 function newuser(id){
 	var self = {
 		id:id,
+		name:id
 	}
 	return self;
 }
@@ -41,8 +45,23 @@ io.sockets.on('connection', function(socket){
 	console.log(socket.client.conn.remoteAddress , socket.id)
 	USER_LIST[socket.id] = user;
 
-	socket.on("submit", function(answer){
-		console.log(answer)
+	socket.on("joinedUser", function(user){
+		console.log("yzy")
+		
+		var pos = 0;
+		var x=0
+		while(pos == 0 && x<=userdb.length-1){
+			//console.log(pos)
+			if(user[0] == userdb[x].split(" ")[0]){
+				console.log(user[0], 1)
+				pos = x;
+				user.id = userdb[x].split(" ")[1]
+			}else if(x == userdb.length-1){
+				fs.appendFileSync("jsdb.txt", user[0]+" "+user[1]+"\n")
+				userdb.push(user[0]+" "+user[1])
+				console.log(x, 2)
+			}x++
+		}
 	})
 
 	socket.on('disconnect', function(){

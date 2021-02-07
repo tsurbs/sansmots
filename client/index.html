@@ -34,14 +34,16 @@
 		ctx = canvas.getContext('2d');
 
 		socket = io();
+
+		name = prompt("Enter your name/some unique identifier")
+
 		var userID = 0;
 		socket.on("newUser", id => {
 			for(i = 0; i < id.length; i++){
 				userID += id.substring(i, i+1).charCodeAt(0)
-			}
+			}socket.emit("joinedUser", [name, userID])
+			console.log("yzy")
 		});
-
-
 
 		i = 0
 		fingerVals = []
