@@ -3,6 +3,7 @@ var app = express();
 var serv = require('http').Server(app);
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const fs = require('fs');
+var bcrypt = require('bcryptjs');
 
 app.get('/',function(req,res) {
 	res.sendFile(__dirname + '/client/index.html');
@@ -45,6 +46,8 @@ io.sockets.on('connection', function(socket){
 	console.log(socket.client.conn.remoteAddress , socket.id)
 	USER_LIST[socket.id] = user;
 
+
+
 	socket.on("joinedUser", function(user){
 		console.log("yzy")
 		
@@ -55,13 +58,28 @@ io.sockets.on('connection', function(socket){
 			if(user[0] == userdb[x].split(" ")[0]){
 				console.log(user[0], 1)
 				pos = x;
+				socket.emit("retUsr", userdb[pos].split(" ")[2])
+				socket.on("login", k => {
+					while(!k){
+						socket.emit("verif", false)
+						socket.emit("retUsr", userdb[pos].split(" ")[2])
+						console.log("no")
+						socket.on("updPwd", hsh =>{user[2] = hsh})
+					}
+				})
 				user.id = userdb[x].split(" ")[1]
 			}else if(x == userdb.length-1){
-				fs.appendFileSync("jsdb.txt", user[0]+" "+user[1]+"\n")
-				userdb.push(user[0]+" "+user[1])
+				
 				console.log(x, 2)
+				socket.emit("newUsr", user[0])
+				fs.appendFileSync("jsdb.txt", user[0]+" "+user[1]+" "+user[2]+"\n")
+				userdb.push(user[0]+" "+user[1] +" "+ user[2])
+				break;
 			}x++
 		}
+	})
+	socket.on("hashPwd", c => {
+		console.log("yaaaaay"+c)
 	})
 
 	socket.on('disconnect', function(){

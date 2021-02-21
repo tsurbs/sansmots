@@ -2,6 +2,7 @@
 <html>
 <head>
 	<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+	<script type="text/javascript" src="https://unpkg.com/bcryptjs@2.4.3/dist/bcrypt.js"></script>
 	<meta name="viewport" content="user-scalable=no">
 	<title></title>
 </head>
@@ -33,18 +34,27 @@
 		canvas = document.getElementById('sandbox');
 		ctx = canvas.getContext('2d');
 
+		var bcrypt = dcodeIO.bcrypt;
 		socket = io();
 
-		name = prompt("Enter your name/some unique identifier")
+		name = prompt("Username")
+		pwd = prompt("Passoword")
+		var salt = bcrypt.genSaltSync(10);
+		var hash = bcrypt.hashSync(pwd, salt);
+		console.log(bcrypt.compareSync(pwd, hash))
 
 		var userID = 0;
 		socket.on("newUser", id => {
 			for(i = 0; i < id.length; i++){
 				userID += id.substring(i, i+1).charCodeAt(0)
-			}socket.emit("joinedUser", [name, userID])
+			}socket.emit("joinedUser", [name, userID, hash])
 			console.log("yzy")
 		});
-
+		socket.on("retUsr", p =>{socket.emit("login", bcrypt.compareSync(pwd, p))});
+		socket.on("verif", o => {while(!o){
+			pwd = prompt("Wrong Password")
+			socket.emit("login", bcrypt.compareSync(pwd, p))
+		}})
 		i = 0
 		fingerVals = []
 		touching = false;

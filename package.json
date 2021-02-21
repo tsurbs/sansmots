@@ -10,6 +10,8 @@
   "author": "Theodor Urban",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.0",
+    "bcryptjs": "^2.4.3",
     "express": "^4.13.4",
     "git": "^0.1.5",
     "git-cli": "^0.11.0",
