@@ -50,11 +50,14 @@
 			}socket.emit("joinedUser", [name, userID, hash])
 			console.log("yzy")
 		});
-		socket.on("retUsr", p =>{socket.emit("login", bcrypt.compareSync(pwd, p))});
-		socket.on("verif", o => {while(!o){
-			pwd = prompt("Wrong Password")
-			socket.emit("login", bcrypt.compareSync(pwd, p))
-		}})
+		svrHsh = "";
+		socket.on("retUsr", p =>{
+			while(!bcrypt.compareSync(pwd, p)){
+				pwd = prompt("Wrong Password")
+				console.log(p)
+			}
+			socket.emit("login", true)
+		});
 		i = 0
 		fingerVals = []
 		touching = false;

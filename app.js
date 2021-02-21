@@ -61,9 +61,6 @@ io.sockets.on('connection', function(socket){
 				socket.emit("retUsr", userdb[pos].split(" ")[2])
 				socket.on("login", k => {
 					while(!k){
-						socket.emit("verif", false)
-						socket.emit("retUsr", userdb[pos].split(" ")[2])
-						console.log("no")
 						socket.on("updPwd", hsh =>{user[2] = hsh})
 					}
 				})
